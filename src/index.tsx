@@ -1,10 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import "ress"
-
+import ChatApp from "containers/pages";
+import React from "react";
+import ReactDOM from "react-dom";
+import "ress";
+import "./style.css";
 ReactDOM.render(
   <React.StrictMode>
-    <div>index</div>
+    <ChatApp />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );

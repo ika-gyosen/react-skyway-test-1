@@ -11,10 +11,12 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/skyway": "^0.0.30",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
     "ress": "^4.0.0",
+    "skyway-js": "^4.4.1",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
