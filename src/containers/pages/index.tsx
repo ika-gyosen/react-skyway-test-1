@@ -68,12 +68,11 @@ function ChatApp() {
       // 別のユーザーが退室した。
       room.current.on("peerLeave", (leaveUserId:string)=>{
         console.log("peerLeave id: ",leaveUserId)
-
       })
     }
     };
     room.current = peer.joinRoom<any>(roomName, { mode: "mesh" });
-
+    roomHandler();
   };
 
   const sendHandler = () =>{
