@@ -1,3 +1,7 @@
+import Chat from "components/Chat";
+import RoomName from "components/RoomName";
+import Status from "components/Status";
+import UserName from "components/UserName";
 import React, { useEffect, useState } from "react";
 import Peer from "skyway-js";
 
@@ -12,6 +16,7 @@ function ChatApp() {
   //   const [roomObj, setroomObj] = useState("new room");
 
   const [message, setMessage] = useState<string[]>([]);
+
   // console.log(peer);
   useEffect(() => {
     peer.on("open", () => {
@@ -53,36 +58,33 @@ function ChatApp() {
 
   return (
     <div>
-      {isOpen ? `Chat app id:${peerId}` : "chatroom error"}
-      <div>
-        <label>
-          user name
-          <input
+      <Status peerId={peerId}/>
+      <UserName >
+      <input
             type="text"
             onChange={(e) => {
               userNameHandler(e);
             }}
           />
-        </label>
-      </div>
-      <div>
-        <label>
-          room name
-          <input
+      </UserName>
+
+  <div>
+    <RoomName>
+      <input
             type="text"
             onChange={(e) => {
               roomNameHandler(e);
             }}
           />
-        </label>
-      </div>
-      <button
-        onClick={() => {
+    </RoomName>
+    <button onClick={() => {
           joinHandler();
-        }}
-      >
-        join
-      </button>
+    }}>
+      join
+    </button>  
+    <button>leave</button>
+  </div>
+  <Chat data= {message}/>
       <div>
         {message.map((item) => (
           <p>{item}</p>
@@ -92,4 +94,4 @@ function ChatApp() {
   );
 }
 
-export default ChatApp;
+export default ChatApp; 
