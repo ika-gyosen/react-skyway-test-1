@@ -1,21 +1,25 @@
 import Chat from "components/Chat";
 import RoomName from "components/RoomName";
+import SendMessage from "components/SendMessage";
 import Status from "components/Status";
 import UserName from "components/UserName";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Peer from "skyway-js";
-
-const peer = new Peer({ key: "7f6811d4-2b08-4bd7-8be8-cd036923e473" });
-
+  
 function ChatApp() {
   const [peerId, setPeerId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [userName, setuserName] = useState("");
   const [roomName, setroomName] = useState("new room");
-  // const [roomName2, setroomName2] = useState("new room");
-  //   const [roomObj, setroomObj] = useState("new room");
-
+  const [sendMessage,setSendMessage] = useState("");
   const [message, setMessage] = useState<string[]>([]);
+
+  const usePeer = () => {
+    const peerRef = useRef<Peer>()
+    return peerRef.current = new Peer({ key: "7f6811d4-2b08-4bd7-8be8-cd036923e473" });
+  }
+    const peer = usePeer();
+    const room = useRef<MeshRoom>()
 
   // console.log(peer);
   useEffect(() => {
@@ -34,9 +38,14 @@ function ChatApp() {
     setroomName(e.target.value);
   };
 
+  const sendMessageHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSendMessage(e.target.value);
+  };
+
   const joinHandler = () => {
-    const roomHandler = (room: any) => {
-      room.on(
+    const roomHandler = () => {
+      if(room.current && room.current.on){
+      room.current.on(
         "data",
         ({
           data,
@@ -50,12 +59,31 @@ function ChatApp() {
           console.log("zzzzzzzzzz", message);
         }
       );
+
+      // 自分以外がログインした。
+      room.current.on("peerJoin", (newUserId:string)=>{
+        console.log("peerJoin id: ",newUserId)
+      })
+
+      // 別のユーザーが退室した。
+      room.current.on("peerLeave", (leaveUserId:string)=>{
+        console.log("peerLeave id: ",leaveUserId)
+
+      })
+    }
     };
-    const roomItem = peer.joinRoom(roomName, { mode: "mesh" });
-    roomHandler(roomItem);
-    // setroomName2(roomName);
+    room.current = peer.joinRoom<any>(roomName, { mode: "mesh" });
+
   };
 
+  const sendHandler = () =>{
+    console.log("test room",room)
+    if(room.current && room.current.send){
+      console.log("送信中",sendMessage)
+      room.current.send({user:peerId,text:sendMessage})
+    }
+  }
+  
   return (
     <div>
       <Status peerId={peerId}/>
@@ -90,8 +118,19 @@ function ChatApp() {
           <p>{item}</p>
         ))}
       </div>
+      <SendMessage>
+    <textarea
+    onChange={(e) => {
+              sendMessageHandler(e);
+            }} />
+  </SendMessage>
+  <button onClick={() => {
+    console.log("押したよ")
+          sendHandler();
+    }}>send</button>
     </div>
   );
+
 }
 
 export default ChatApp; 
